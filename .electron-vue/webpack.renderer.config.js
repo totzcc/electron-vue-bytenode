@@ -11,7 +11,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
-
+const { BytenodeWebpackPlugin } = require('@herberttn/bytenode-webpack-plugin');
 /**
  * List of node_modules to include in webpack bundle
  *
@@ -171,6 +171,7 @@ if (process.env.NODE_ENV === 'production') {
   rendererConfig.devtool = ''
 
   rendererConfig.plugins.push(
+    new BytenodeWebpackPlugin({ compileForElectron: true }),
     new MinifyPlugin(),
     new CopyWebpackPlugin([
       {

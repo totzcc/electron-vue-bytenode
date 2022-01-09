@@ -5,7 +5,7 @@ process.env.BABEL_ENV = 'main'
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
-
+const { BytenodeWebpackPlugin } = require('@herberttn/bytenode-webpack-plugin');
 const MinifyPlugin = require("babel-minify-webpack-plugin")
 
 let mainConfig = {
@@ -62,6 +62,7 @@ if (process.env.NODE_ENV !== 'production') {
  */
 if (process.env.NODE_ENV === 'production') {
   mainConfig.plugins.push(
+    new BytenodeWebpackPlugin({ compileForElectron: true }),
     new MinifyPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
