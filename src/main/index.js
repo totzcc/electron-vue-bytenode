@@ -37,10 +37,6 @@ function createWindow () {
     mainWindow = null
   })
 
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.openDevTools()
-  }
   protocol.registerStringProtocol('itms-appss', (request) => {
     console.log('registerStringProtocol itms-appss', request)
   })
