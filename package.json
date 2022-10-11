@@ -2,7 +2,7 @@
   "name": "electron-vue-bytenode",
   "version": "0.0.1",
   "author": "dev@doujin168.dev",
-  "description": "nice job",
+  "description": "electron-vue-bytenode",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {

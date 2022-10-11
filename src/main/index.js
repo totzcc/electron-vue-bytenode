@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import {app, BrowserWindow, Menu, powerSaveBlocker, protocol} from 'electron'
 import '../renderer/store'
 
 /**
@@ -19,21 +19,57 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    width: 1280,
+    height: 800,
     useContentSize: true,
-    width: 1000,
     webPreferences: {
+      webviewTag: true,
+      webSecurity: false,
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
     }
   })
 
-  mainWindow.loadURL(winURL)
+  mainWindow.loadURL(winURL).then()
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.openDevTools()
+  }
+  protocol.registerStringProtocol('itms-appss', (request) => {
+    console.log('registerStringProtocol itms-appss', request)
+  })
+  protocol.registerStringProtocol('kwai', (request) => {
+    console.log('registerStringProtocol kwai', request)
+  })
+  if (process.platform === 'darwin') {
+    const template = [
+      {
+        label: "Application",
+        submenu: [
+          { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+        ]
+      },
+      {
+        label: "Edit",
+        submenu: [
+          { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" },
+          { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+          { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+          { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        ]
+      }
+    ];
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+  } else {
+    Menu.setApplicationMenu(null)
+  }
+  powerSaveBlocker.start('prevent-display-sleep')
 }
 
 app.on('ready', createWindow)
@@ -49,23 +85,10 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+}
+app.on('second-instance', (e) => {
+  mainWindow.show();
+  mainWindow.focus();
+});
