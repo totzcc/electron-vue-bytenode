@@ -37,12 +37,6 @@ function createWindow () {
     mainWindow = null
   })
 
-  protocol.registerStringProtocol('itms-appss', (request) => {
-    console.log('registerStringProtocol itms-appss', request)
-  })
-  protocol.registerStringProtocol('kwai', (request) => {
-    console.log('registerStringProtocol kwai', request)
-  })
   if (process.platform === 'darwin') {
     const template = [
       {
