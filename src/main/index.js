@@ -1,5 +1,6 @@
 import {app, BrowserWindow, Menu, powerSaveBlocker, protocol} from 'electron'
 import '../renderer/store'
+import EventBusMain from "../renderer/util/event-bus-main";
 
 /**
  * Set `__static` path to static files in production
@@ -82,3 +83,4 @@ app.on('second-instance', (e) => {
   mainWindow.show();
   mainWindow.focus();
 });
+EventBusMain.registerOnMainThread()
